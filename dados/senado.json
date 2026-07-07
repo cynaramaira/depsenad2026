@@ -1,0 +1,143 @@
+	
+abrangencia	
+andamento	"100,00"
+eleitoradoApurado	7008795
+eleitores	7008795
+nome	"Pernambuco"
+secoes	20572
+secoesTotalizadas	20572
+totalizacaoFinal	true
+uf	"PE"
+votos	
+abstencao	
+porcentagem	"18,21"
+quantidade	1276506
+apurados	
+porcentagem	"81,79"
+quantidade	5732289
+brancos	
+porcentagem	"9,73"
+quantidade	557609
+comparecimento	5732289
+naoApurados	0
+nulos	
+porcentagem	"12,30"
+quantidade	705260
+pendentes	0
+validos	
+porcentagem	"77,96"
+quantidade	4468754
+votosComputados	4469420
+candidatos	
+0	
+destinacaoDosVotos	"Válido"
+eleito	"E"
+matEleito	"E"
+matPerdedor	false
+posicao	1
+nome	"Teresa Leitão"
+numero	"130"
+partido	"PT"
+votos	
+porcentagem	"46,12"
+quantidade	2061276
+1	
+destinacaoDosVotos	"Válido"
+eleito	"N"
+matEleito	"N"
+matPerdedor	true
+posicao	2
+nome	"Gilson Machado"
+numero	"222"
+partido	"PL"
+votos	
+porcentagem	"29,55"
+quantidade	1320555
+2	
+destinacaoDosVotos	"Válido"
+eleito	"N"
+matEleito	"N"
+matPerdedor	true
+posicao	3
+nome	"André De Paula"
+numero	"555"
+partido	"PSD"
+votos	
+porcentagem	"12,69"
+quantidade	567367
+3	
+destinacaoDosVotos	"Válido"
+eleito	"N"
+matEleito	"N"
+matPerdedor	true
+posicao	4
+nome	"Carlos A. Lima"
+numero	"444"
+partido	"UNIÃO BRASIL"
+votos	
+porcentagem	"5,78"
+quantidade	258289
+4	
+destinacaoDosVotos	"Válido"
+eleito	"N"
+matEleito	"N"
+matPerdedor	true
+posicao	5
+nome	"Guilherme Coelho"
+numero	"456"
+partido	"PSDB"
+votos	
+porcentagem	"4,19"
+quantidade	187364
+5	
+destinacaoDosVotos	"Válido"
+eleito	"N"
+matEleito	"N"
+matPerdedor	true
+posicao	6
+nome	"Eugênia Lima"
+numero	"500"
+partido	"PSOL"
+votos	
+porcentagem	"1,01"
+quantidade	45358
+6	
+destinacaoDosVotos	"Válido"
+eleito	"N"
+matEleito	"N"
+matPerdedor	true
+posicao	7
+nome	"Esteves Jacinto"
+numero	"281"
+partido	"PRTB"
+votos	
+porcentagem	"0,35"
+quantidade	15701
+7	
+destinacaoDosVotos	"Válido"
+eleito	"N"
+matEleito	"N"
+matPerdedor	true
+posicao	8
+nome	"Dayse Medeiros"
+numero	"160"
+partido	"PSTU"
+votos	
+porcentagem	"0,29"
+quantidade	12844
+8	
+destinacaoDosVotos	"Anulado sub judice"
+eleito	"N"
+matEleito	"N"
+matPerdedor	true
+posicao	9
+nome	"Roberta Rita"
+numero	"290"
+partido	"PCO"
+votos	
+porcentagem	"0,01"
+quantidade	666
+dataHora	"2022-10-03T20:22:49"
+filename	"PE-c0005-e000546-v.json"
+tipo	"UF"
+dataRecebimento	"2022-10-03T23:23:24"
