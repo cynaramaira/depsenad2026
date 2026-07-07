@@ -214,20 +214,6 @@
             display: block;
         }
 
-        .info-contexto-legislativo {
-            background: rgba(2, 71, 150, 0.1);
-            border: 1px solid rgba(2, 71, 150, 0.3);
-            padding: 12px 20px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            font-size: 0.9rem;
-            color: var(--texto-secundario);
-        }
-
-        .info-contexto-legislativo strong {
-            color: #ffffff;
-        }
-
         .grid-senadores {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -334,7 +320,6 @@
         }
 
         .selo-status.eleito { background-color: var(--verde-eleito); }
-        .selo-status.turno2 { background-color: var(--amarelo-turno); }
 
         .hora-eleito {
             font-size: 0.7rem;
@@ -531,7 +516,7 @@
         </div>
         <div class="badge-ao-vivo">
             <div class="ponto-pulsante"></div>
-            <span>Ao Vivo</span>
+            <span>Simulado Local</span>
         </div>
     </header>
 
@@ -557,26 +542,25 @@
         </section>
 
         <nav class="abas-container">
-            <button class="aba-btn ativa" onclick="alternarAba('0005')">Senador</button>
-            <button class="aba-btn" onclick="alternarAba('0006')">Dep. Federal</button>
-            <button class="aba-btn" onclick="alternarAba('0007')">Dep. Estadual</button>
+            <button class="aba-btn ativa" onclick="alternarAba('senador')">Senador</button>
+            <button class="aba-btn" onclick="alternarAba('deputado-federal')">Dep. Federal</button>
+            <button class="aba-btn" onclick="alternarAba('deputado-estadual')">Dep. Estadual</button>
         </nav>
 
         <div id="container-loading" class="estado-mensagem">
             <div class="spinner"></div>
-            <div class="texto-mensagem">Buscando dados oficiais do tribunal...</div>
+            <div class="texto-mensagem">Carregando banco de dados simulado...</div>
         </div>
 
         <div id="container-erro" class="estado-mensagem" style="display: none;">
-            <div class="texto-mensagem" id="erro-texto-conteudo">Dados temporariamente indisponíveis.</div>
+            <div class="texto-mensagem" id="erro-texto-conteudo">Falha ao ler os arquivos locais.</div>
         </div>
 
-        <section id="painel-0005" class="conteudo-painel ativo">
+        <section id="painel-senador" class="conteudo-painel ativo">
             <div class="grid-senadores" id="lista-senadores"></div>
         </section>
 
-        <section id="painel-0006" class="conteudo-painel">
-            <div class="info-contexto-legislativo" id="contexto-0006" style="display: none;"></div>
+        <section id="painel-deputado-federal" class="conteudo-painel">
             <table class="tabela-legislativo">
                 <thead>
                     <tr>
@@ -589,8 +573,7 @@
             </table>
         </section>
 
-        <section id="painel-0007" class="conteudo-painel">
-            <div class="info-contexto-legislativo" id="contexto-0007" style="display: none;"></div>
+        <section id="painel-deputado-estadual" class="conteudo-painel">
             <table class="tabela-legislativo">
                 <thead>
                     <tr>
@@ -605,44 +588,24 @@
     </main>
 
     <footer>
-        <p>Portal jamildo.com — Tecnologia de apuração integrada aos arquivos oficiais do Tribunal Superior Eleitoral.</p>
+        <p>Portal jamildo.com — Ambiente de testes local baseado no repositório unificado de dados históricos.</p>
     </footer>
 
     <script>
-        const WORKER_BASE_URL = "https://tse-2022-teste.cynaramaira.workers.dev/";
-        let cargoAtivo = "0005";
-        let temporizadorAtualizacao = null;
+        let cargoAtivo = "senador";
         const memoriaHistoricoResultados = {};
-
-        // Banco de dados auxiliar estático para os nomes e partidos reais de 2022 em PE
-        const nomesCandidatos2022 = {
-            "130": "Teresa Leitão",
-            "222": "Gilson Machado",
-            "555": "Guilherme Coelho",
-            "456": "Carlos Andrade Lima",
-            "444": "Armando Monteiro",
-            "500": "Eugênia Lima",
-            "281": "Esteves Jacinto",
-            "160": "Roberta Rita",
-            "290": "Teio Ramos"
-        };
-
-        const partidosCandidatos2022 = {
-            "130": "PT", "222": "PL", "555": "PSDB", "456": "UNIÃO",
-            "444": "PODE", "500": "PSOL", "281": "PRTB", "160": "PSTU", "290": "PMN"
-        };
 
         function tratarFalhaImagem(img) {
             img.onerror = null;
             img.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'><circle cx='50' cy='50' r='45' fill='%231e2640'/><text x='50%25' y='55%25' font-family='sans-serif' font-size='14' fill='%2394a3b8' text-anchor='middle'>FOTO</text></svg>";
         }
 
-        function alternarAba(codigoCargo) {
-            cargoAtivo = codigoCargo;
+        function alternarAba(nomeCargo) {
+            cargoAtivo = nomeCargo;
             
             document.querySelectorAll(".aba-btn").forEach((btn, index) => {
-                const listaCargos = ["0005", "0006", "0007"];
-                if (listaCargos[index] === codigoCargo) {
+                const listaCargos = ["senador", "deputado-federal", "deputado-estadual"];
+                if (listaCargos[index] === nomeCargo) {
                     btn.classList.add("ativa");
                 } else {
                     btn.classList.remove("ativa");
@@ -650,157 +613,59 @@
             });
 
             document.querySelectorAll(".conteudo-painel").forEach(painel => {
-                if (painel.id === "painel-" + codigoCargo) {
+                if (painel.id === "painel-" + nomeCargo) {
                     painel.classList.add("ativo");
                 } else {
                     painel.classList.remove("ativo");
                 }
             });
 
-            buscarDadosApuracao();
+            buscarDadosApuracaoLocal();
         }
 
-        async function buscarDadosApuracao() {
+        // NOVA FUNÇÃO: Busca os arquivos .json salvos localmente na sua pasta do projeto
+        async function buscarDadosApuracaoLocal() {
             mostrarCarregando();
-            const urlCompleta = WORKER_BASE_URL + "?cargo=" + cargoAtivo;
+            const caminhoArquivoLocal = "./dados/" + cargoAtivo + ".json";
 
             try {
-                const resposta = await fetch(urlCompleta);
+                const resposta = await fetch(caminhoArquivoLocal);
                 if (!resposta.ok) {
-                    throw new Error("Erro na comunicação com o servidor.");
+                    throw new Error("Erro ao abrir o arquivo local");
                 }
 
                 const dadosJSON = await resposta.json();
-                if (!dadosJSON || !dadosJSON.carg) {
-                    throw new Error("Estrutura de dados incompleta.");
-                }
-
                 processarEExibir(dadosJSON);
             } catch (erro) {
-                console.error("Falha no processamento:", erro);
-                mostrarErro("Aguardando inicialização dos arquivos de apuração pelo tribunal.");
+                console.error("Falha na leitura local:", erro);
+                mostrarErro("Arquivo local dados/" + cargoAtivo + ".json não encontrado. Certifique-se de criar a pasta dados e colocar os arquivos dentro.");
             }
         }
 
         function processarEExibir(dados) {
-            const dataTSE = dados.dg || "...";
-            const horaTSE = dados.ht || (dados.hg || "00:00:00");
-            document.getElementById("horario-tse").textContent = horaTSE;
-
-            let percentualApuradoTexto = "0,00";
-            if (dados.s && dados.s.pst) {
-                percentualApuradoTexto = dados.s.pst.trim();
-            }
-            document.getElementById("percentual-totalizado").textContent = percentualApuradoTexto + "%";
+            // Processa o topo da página usando os metadados unificados da raiz do JSON
+            const dataHoraTexto = dados.dataHora || "00:00:00";
+            document.getElementById("horario-tse").textContent = dataHoraTexto.split("T")[1] ? dataHoraTexto.split("T")[1].slice(0, 8) : dataHoraTexto;
             
-            const secoesTotalizadas = dados.s ? (dados.s.st || "0") : "0";
-            const secoesTotais = dados.s ? (dados.s.ts || "0") : "0";
-            document.getElementById("secoes-totalizadas").textContent = secoesTotalizadas + " / " + secoesTotais;
+            const andamentoTexto = dados.andamento || (dados.abrangencia ? dados.abrangencia.andamento : "100,00");
+            document.getElementById("percentual-totalizado").textContent = andamentoTexto + "%";
+            
+            const secoesApuradas = dados.secoesTotalizadas || (dados.abrangencia ? dados.abrangencia.secoesTotalizadas : "20572");
+            const secoesTotais = dados.secoes || (dados.abrangencia ? dados.abrangencia.secoes : "20572");
+            document.getElementById("secoes-totalizadas").textContent = secoesApuradas + " / " + secoesTotais;
 
-            const numeroFloatProgresso = parseFloat(percentualApuradoTexto.replace(",", "."));
+            const numeroFloatProgresso = parseFloat(andamentoTexto.replace(",", "."));
             document.getElementById("barra-totalizacao-fill").style.width = numeroFloatProgresso + "%";
 
-            const dadosCargo = dados.carg.find(c => c.cd === cargoAtivo);
-            if (!dadosCargo) {
-                mostrarErro("Dados específicos para este cargo não foram localizados.");
-                return;
-            }
-
-            const campoContexto = document.getElementById("contexto-" + cargoAtivo);
-            if (campoContexto) {
-                if (dadosCargo && dadosCargo.qe) {
-                    campoContexto.innerHTML = "Quociente Eleitoral (QE) definido pelo tribunal para esta eleição: <strong>" + dadosCargo.qe + "</strong> votos.";
-                    campoContexto.style.display = "block";
-                } else {
-                    campoContexto.style.display = "none";
-                }
-            }
-
-            let listaCandidatosUnificada = [];
-
-            // CAPTURA CORRIGIDA: LÊ OS CANDIDATOS SE ELES ESTIVEREM DIRETO NA RAIZ DO CARGO (COMO EM 2022)
-            if (dadosCargo.cand && dadosCargo.cand.length > 0) {
-                dadosCargo.cand.forEach(cand => {
-                    listaCandidatosUnificada.push(estruturarObjetoCandidato(cand, "---", horaTSE));
-                });
-            } 
-            // CAMINHO COMPLEMENTAR: CASO OS DADOS VENHAM DENTRO DE COLIGAÇÕES (ESTRUTURA COMPLEXA PADRÃO)
-            else if (dadosCargo.agr) {
-                dadosCargo.agr.forEach(coligacao => {
-                    if (coligacao.cand) {
-                        coligacao.cand.forEach(cand => {
-                            listaCandidatosUnificada.push(estruturarObjetoCandidato(cand, coligacao.sg || "---", horaTSE));
-                        });
-                    }
-                    if (coligacao.par) {
-                        coligacao.par.forEach(partido => {
-                            if (partido.cand) {
-                                partido.cand.forEach(cand => {
-                                    listaCandidatosUnificada.push(estruturarObjetoCandidato(cand, partido.sg || "---", horaTSE));
-                                });
-                            }
-                        });
-                    }
-                });
-            }
-
-            listaCandidatosUnificada.sort((a, b) => b.votosAbsolutos - a.votosAbsolutos);
+            // Coleta a lista unificada de candidatos do JSON local
+            const listaCandidatos = dados.candidatos || [];
 
             ocultarEstadosMensagem();
-            if (cargoAtivo === "0005") {
-                renderizarCardsMajoritarios(listaCandidatosUnificada);
+            if (cargoAtivo === "senador") {
+                renderizarCardsMajoritarios(listaCandidatos);
             } else {
-                renderizarListaCompacta(listaCandidatosUnificada);
+                renderizarListaCompacta(listaCandidatos);
             }
-
-            if (numeroFloatProgresso === 100.00) {
-                clearInterval(temporizadorAtualizacao);
-                document.getElementById("status-apuracao-texto").textContent = "Apuração Concluída";
-            }
-        }
-
-        function estruturarObjetoCandidato(cand, siglaPartido, horaAtualTSE) {
-            const numeroIdentificador = cand.n || "00";
-            const idSequencial = cand.sqcand || cand.seq || "";
-            
-            // Tenta resgatar do dicionário fixo para os dados de teste ficarem bonitos ou usa o valor do JSON
-            const nomeUrna = nomesCandidatos2022[numeroIdentificador] || cand.nm || "Candidato";
-            const partidoFinal = partidosCandidatos2022[numeroIdentificador] || siglaPartido;
-            
-            const votosAbsolutos = parseInt(cand.vap) || 0;
-            const porcentagemTexto = cand.pvap || "0,00";
-
-            let situacaoLimpa = "";
-            if (cand.st) {
-                situacaoLimpa = cand.st.toLowerCase().trim();
-            } else if (cand.e) {
-                situacaoLimpa = cand.e.toLowerCase().trim();
-            }
-
-            let statusFormatado = "";
-            if (situacaoLimpa === "e" || situacaoLimpa === "me" || situacaoLimpa === "eleito" || cand.e === "s" || cand.e === "S") {
-                statusFormatado = "eleito";
-                if (!memoriaHistoricoResultados[numeroIdentificador]) {
-                    memoriaHistoricoResultados[numeroIdentificador] = horaAtualTSE;
-                }
-            } else if (situacaoLimpa === "2t" || situacaoLimpa === "2º turno") {
-                statusFormatado = "2t";
-            }
-
-            // Simula uma ID válida de fotos do repositório oficial baseada no número
-            const idFotoTSE = "2500016" + numeroIdentificador;
-            const urlFotoCandidato = "https://resultados.tse.jus.br/oficial/ele2022/arquivos-comuns/fotos/pe/" + idFotoTSE + ".jpeg";
-
-            return {
-                id: numeroIdentificador,
-                numero: numeroIdentificador,
-                nome: nomeUrna,
-                partido: partidoFinal,
-                votosAbsolutos: votosAbsolutos,
-                porcentagem: porcentagemTexto,
-                status: statusFormatado,
-                foto: urlFotoCandidato
-            };
         }
 
         function renderizarCardsMajoritarios(candidatos) {
@@ -808,7 +673,7 @@
             container.innerHTML = "";
 
             if (candidatos.length === 0) {
-                container.innerHTML = "<div class='texto-mensagem'>Nenhum registro de candidatura localizado.</div>";
+                container.innerHTML = "<div class='texto-mensagem'>Nenhum candidato mapeado dentro deste arquivo json.</div>";
                 return;
             }
 
@@ -819,19 +684,27 @@
                 let htmlSelo = "";
                 let htmlHora = "";
 
-                if (cand.status === "eleito") {
+                if (cand.eleito === "E" || cand.matEleito === "E") {
                     htmlSelo = "<span class='selo-status eleito'>Eleito</span>";
-                    const horaGravada = memoriaHistoricoResultados[cand.id] || "09:33:50";
+                    if (!memoriaHistoricoResultados[cand.numero]) {
+                        memoriaHistoricoResultados[cand.numero] = document.getElementById("horario-tse").textContent;
+                    }
+                    const horaGravada = memoriaHistoricoResultados[cand.numero] || "Confirmado";
                     htmlHora = "<span class='hora-eleito'>Registrado às " + horaGravada + "</span>";
-                } else if (cand.status === "2t") {
-                    htmlSelo = "<span class='selo-status turno2'>2º Turno</span>";
                 }
+
+                // Utiliza a foto direta que vem da estrutura unificada da API local
+                const urlFoto = cand.foto || "https://resultados.tse.jus.br/oficial/ele2022/arquivos-comuns/fotos/pe/2500016" + cand.numero + ".jpeg";
+
+                // Suporta estruturas aninhadas de votos ou diretas do payload unificado
+                const pctCandidato = cand.votos.porcentagem || cand.votos;
+                const quantidadeVotos = cand.votos.quantidade || cand.quantidade;
 
                 acumularHTML += `
                     <article class="card-majoritario">
                         <div class="topo-card">
                             <div class="foto-container">
-                                <img src="${cand.foto}" class="foto-candidato" alt="${cand.nome}" onerror="tratarFalhaImagem(this)">
+                                <img src="${urlFoto}" class="foto-candidato" alt="${cand.nome}" onerror="tratarFalhaImagem(this)">
                                 <div class="posicao-badge">${numPosicao}</div>
                             </div>
                             <div class="dados-identificacao">
@@ -845,11 +718,11 @@
                         </div>
                         <div class="votos-container">
                             <div class="votos-valores">
-                                <span class="porcentagem-votos">${cand.porcentagem}%</span>
-                                <span class="absoluto-votos">${cand.votosAbsolutos.toLocaleString('pt-BR')} votos</span>
+                                <span class="porcentagem-votos">${pctCandidato}%</span>
+                                <span class="absoluto-votos">${parseInt(quantidadeVotos).toLocaleString('pt-BR')} votos</span>
                             </div>
                             <div class="barra-candidato-wrap">
-                                <div class="barra-candidato-preenchimento" style="width: ${cand.porcentagem.replace(',', '.')}%"></div>
+                                <div class="barra-candidato-preenchimento" style="width: ${String(pctCandidato).replace(',', '.')}%"></div>
                             </div>
                         </div>
                     </article>
@@ -859,11 +732,11 @@
         }
 
         function renderizarListaCompacta(candidatos) {
-            const tabelaCorpo = cargoAtivo === "0006" ? document.getElementById("lista-federais") : document.getElementById("lista-estaduais");
+            const tabelaCorpo = cargoAtivo === "deputado-federal" ? document.getElementById("lista-federais") : document.getElementById("lista-estaduais");
             tabelaCorpo.innerHTML = "";
 
             if (candidatos.length === 0) {
-                tabelaCorpo.innerHTML = "<tr><td colspan='3' class='texto-mensagem' style='padding: 30px;'>Nenhum registro encontrado.</td></tr>";
+                tabelaCorpo.innerHTML = "<tr><td colspan='3' class='texto-mensagem' style='padding: 30px;'>Nenhum candidato localizado no arquivo json.</td></tr>";
                 return;
             }
 
@@ -871,15 +744,19 @@
 
             candidatos.forEach(cand => {
                 let txtSeloLegislativo = "";
-                if (cand.status === "eleito") {
+                if (cand.eleito === "E" || cand.matEleito === "E") {
                     txtSeloLegislativo = " <span style='color: var(--verde-eleito); font-weight: bold; font-size: 0.8rem;'>[ELEITO]</span>";
                 }
+
+                const urlFoto = cand.foto || "https://resultados.tse.jus.br/oficial/ele2022/arquivos-comuns/fotos/pe/2500016" + cand.numero + ".jpeg";
+                const pctCandidato = cand.votos.porcentagem || cand.votos;
+                const quantidadeVotos = cand.votos.quantidade || cand.quantidade;
 
                 acumularHTML += `
                     <tr class="linha-candidato">
                         <td>
                             <div class="celula-perfil">
-                                <img src="${cand.foto}" class="foto-compacta" alt="${cand.nome}" onerror="tratarFalhaImagem(this)">
+                                <img src="${urlFoto}" class="foto-compacta" alt="${cand.nome}" onerror="tratarFalhaImagem(this)">
                                 <div>
                                     <div class="nome-compacto">${cand.nome}${txtSeloLegislativo}</div>
                                     <div style="font-size: 0.8rem; color: var(--texto-secundario);">nº ${cand.numero}</div>
@@ -890,8 +767,8 @@
                             ${cand.partido}
                         </td>
                         <td class="celula-valores">
-                            <div class="pct-compacta">${cand.porcentagem}%</div>
-                            <div class="abs-compacta">${cand.votosAbsolutos.toLocaleString('pt-BR')} v.</div>
+                            <div class="pct-compacta">${pctCandidato}%</div>
+                            <div class="abs-compacta">${parseInt(quantidadeVotos).toLocaleString('pt-BR')} v.</div>
                         </td>
                     </tr>
                 `;
@@ -915,8 +792,8 @@
             document.getElementById("container-erro").style.display = "none";
         }
 
-        buscarDadosApuracao();
-        temporizadorAtualizacao = setInterval(buscarDadosApuracao, 60000);
+        // Executa a carga inicial do arquivo local
+        buscarDadosApuracaoLocal();
     </script>
 </body>
 </html>
